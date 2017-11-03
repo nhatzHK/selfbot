@@ -1,0 +1,9 @@
+{
+    "sed"    : {
+        "func"          : "sed",
+        "alias"         : "s"
+    },
+    "s"     : {
+        "func"          : "sed"
+    }
+}
