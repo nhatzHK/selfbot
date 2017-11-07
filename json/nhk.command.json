@@ -1,9 +1,16 @@
 {
-    "sed"    : {
+    "sed"           : {
         "func"          : "sed",
         "alias"         : "s"
     },
-    "s"     : {
+    "s"             : {
         "func"          : "sed"
+    },
+    "spongemock"    : {
+        "func"          : "spongemock",
+        "alias"         : "sm"
+    },
+    "sm"            : {
+        "func"          : "spongemock"
     }
 }
