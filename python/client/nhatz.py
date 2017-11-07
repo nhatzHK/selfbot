@@ -44,13 +44,21 @@ comanager = CommandManager(
         commands,
         nhatz_config)
 
+def record_message(msg): 
+    if msg.channel.id in comanager.last_msg:
+        comanager.last_msg[msg.channel.id].put (msg)
+    else:
+        comanager.last_msg[msg.channel.id] = queue.LifoQueue()
+        comanager.last_msg[msg.channel.id].put (msg)
+
+
 @Nhatz.event
 async def on_ready ():
     CLIENT.greet (Nhatz)
 
 @Nhatz.event
 async def on_message (msg):
-    global last_msg
+    val = None
     if msg.author.id != Nhatz.user.id:
         return
     elif msg.content.startswith (nhatz_config['prefix']):
@@ -59,15 +67,11 @@ async def on_message (msg):
             com = args[0].replace (nhatz_config['prefix'], '')
             args = args[1:]
             if com in comanager.com:
-                await comanager.run (msg, com, args)
-                await Nhatz.delete_message(msg)
-                # return so it doesn't fail through and store this message
-                return
+                val = await comanager.run (msg, com, args)
     
-    if msg.channel.id in comanager.last_msg:
-        comanager.last_msg[msg.channel.id].put (msg)
+    if val:
+        record_message(val)
     else:
-        comanager.last_msg[msg.channel.id] = queue.LifoQueue()
-        comanager.last_msg[msg.channel.id].put (msg)
+        record_message(msg)
 
 Nhatz.run (nhatz_config['token'], bot=False)
