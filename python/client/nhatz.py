@@ -35,6 +35,7 @@ logging.basicConfig (level = logging.INFO)
 
 nhatz_config = CLIENT.loadJson (CONFIG)
 commands = CLIENT.loadJson (COMMANDS)
+censored = nhatz_config['censored']
 
 Nhatz = discord.Client ()
 last_msg = dict()
@@ -61,7 +62,12 @@ async def on_message (msg):
     val = None
     if msg.author.id != Nhatz.user.id:
         return
-    elif msg.content.startswith (nhatz_config['prefix']):
+
+    if any(word in msg.content for word in censored):
+        await Nhatz.delete_message(msg)
+        return
+
+    if msg.content.startswith (nhatz_config['prefix']):
         args = msg.content.split (' ')
         if len(args) > 0:
             com = args[0].replace (nhatz_config['prefix'], '')
